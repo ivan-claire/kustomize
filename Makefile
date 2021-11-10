@@ -25,7 +25,7 @@ REPO_NAME := "kustomize"
 endif
 
 .PHONY: all
-all: install-tools verify-kustomize
+all: install-tools #verify-kustomize
 
 .PHONY: verify-kustomize
 verify-kustomize: \
@@ -227,60 +227,60 @@ build-kustomize-api: $(builtinplugins)
 generate-kustomize-api: $(MYGOBIN)/k8scopy
 	cd api; go generate ./...
 
-.PHONY: test-unit-kustomize-api
-test-unit-kustomize-api: build-kustomize-api
-	cd api; go test ./...  -ldflags "-X sigs.k8s.io/kustomize/api/provenance.version=v444.333.222"
+# .PHONY: test-unit-kustomize-api
+# test-unit-kustomize-api: build-kustomize-api
+# 	cd api; go test ./...  -ldflags "-X sigs.k8s.io/kustomize/api/provenance.version=v444.333.222"
 
-.PHONY: test-unit-kustomize-plugins
-test-unit-kustomize-plugins:
-	./hack/testUnitKustomizePlugins.sh
+# .PHONY: test-unit-kustomize-plugins
+# test-unit-kustomize-plugins:
+# 	./hack/testUnitKustomizePlugins.sh
 
-.PHONY: test-unit-kustomize-cli
-test-unit-kustomize-cli:
-	cd kustomize; go test ./...
+# .PHONY: test-unit-kustomize-cli
+# test-unit-kustomize-cli:
+# 	cd kustomize; go test ./...
 
-.PHONY: test-unit-kustomize-all
-test-unit-kustomize-all: \
-	test-unit-kustomize-api \
-	test-unit-kustomize-cli \
-	test-unit-kustomize-plugins
+# .PHONY: test-unit-kustomize-all
+# test-unit-kustomize-all: \
+# 	test-unit-kustomize-api \
+# 	test-unit-kustomize-cli \
+# 	test-unit-kustomize-plugins
 
-test-unit-cmd-all:
-	./hack/kyaml-pre-commit.sh
+# test-unit-cmd-all:
+# 	./hack/kyaml-pre-commit.sh
 
-test-go-mod:
-	./hack/check-go-mod.sh
+# test-go-mod:
+# 	./hack/check-go-mod.sh
 
 # Environment variables are defined at
 # https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md#job-environment-variables
-.PHONY: test-multi-module
-test-multi-module: $(MYGOBIN)/prchecker
-	( \
-		export MYGOBIN=$(MYGOBIN); \
-		export REPO_OWNER=$(REPO_OWNER); \
-		export REPO_NAME=$(REPO_NAME); \
-		export PULL_NUMBER=$(PULL_NUMBER); \
-		export MODULES=$(MODULES); \
-		./hack/check-multi-module.sh; \
-	)
+# .PHONY: test-multi-module
+# test-multi-module: $(MYGOBIN)/prchecker
+# 	( \
+# 		export MYGOBIN=$(MYGOBIN); \
+# 		export REPO_OWNER=$(REPO_OWNER); \
+# 		export REPO_NAME=$(REPO_NAME); \
+# 		export PULL_NUMBER=$(PULL_NUMBER); \
+# 		export MODULES=$(MODULES); \
+# 		./hack/check-multi-module.sh; \
+# 	)
 
-.PHONY:
-test-examples-e2e-kustomize: $(MYGOBIN)/mdrip $(MYGOBIN)/kind
-	( \
-		set -e; \
-		/bin/rm -f $(MYGOBIN)/kustomize; \
-		echo "Installing kustomize from ."; \
-		cd kustomize; go install .; cd ..; \
-		./hack/testExamplesE2EAgainstKustomize.sh .; \
-	)
+# .PHONY:
+# test-examples-e2e-kustomize: $(MYGOBIN)/mdrip $(MYGOBIN)/kind
+# 	( \
+# 		set -e; \
+# 		/bin/rm -f $(MYGOBIN)/kustomize; \
+# 		echo "Installing kustomize from ."; \
+# 		cd kustomize; go install .; cd ..; \
+# 		./hack/testExamplesE2EAgainstKustomize.sh .; \
+# 	)
 
-.PHONY:
-test-examples-kustomize-against-HEAD: $(MYGOBIN)/kustomize $(MYGOBIN)/mdrip
-	./hack/testExamplesAgainstKustomize.sh HEAD
+# .PHONY:
+# test-examples-kustomize-against-HEAD: $(MYGOBIN)/kustomize $(MYGOBIN)/mdrip
+# 	./hack/testExamplesAgainstKustomize.sh HEAD
 
-.PHONY:
-test-examples-kustomize-against-v4-release: $(MYGOBIN)/mdrip
-	./hack/testExamplesAgainstKustomize.sh v4@$(LATEST_V4_RELEASE)
+# .PHONY:
+# test-examples-kustomize-against-v4-release: $(MYGOBIN)/mdrip
+# 	./hack/testExamplesAgainstKustomize.sh v4@$(LATEST_V4_RELEASE)
 
 # linux only.
 # This is for testing an example plugin that
